@@ -77,7 +77,56 @@ languageRouter
           error: `Missing '${field}' in request body`
         })
 
-    // await LanguageService.getLLData()
+    try {
+      const words = await LanguageService.getLLData(
+        req.app.get('db'),
+        req.language.id
+      )
+
+      const List = await LanguageService.createLL(words)
+
+      const firstQ = await List.getFirst()
+
+      const nextQ = await List.getNext()
+
+      const {
+        translation,
+        memory_value, 
+        incorrect_count, 
+        correct_count,
+        totalScore
+      } = firstQ
+        
+      const isCorrect = await function() {
+        if (guess !== translation) {
+          this.memory_value = 1
+          this.incorrect_count += 1
+          return false
+        } else if (guess === translation) {
+          this.memory_value = memory_value * 2 
+          this.correct_count += 1
+          this.totalScore += 1
+          return true
+        }
+        List.moveTo(this.memory_value)
+      }
+      
+
+      const feedback = {
+        'answer': translation,
+        'isCorrect': isCorrect(),
+        'nextWord': nextQ.original,
+        'totalScore': totalScore,
+        "wordCorrectCount": correct_count,
+        "wordIncorrectCount": incorrect_count
+      }
+
+      res.send(feedback)
+      
+      next()
+    } catch (error) {
+      next(error)
+    }
 
   })
 

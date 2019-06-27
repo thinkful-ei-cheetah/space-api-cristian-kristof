@@ -71,6 +71,7 @@ const LanguageService = {
   createLL(words) {
     const LL = new LinkedList()
     words.forEach(word => LL.insertLast(word))
+    return LL
   }
 }
 

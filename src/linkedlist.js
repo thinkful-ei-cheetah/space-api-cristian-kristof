@@ -134,6 +134,12 @@ class LinkedList {
     return firstNode.val
   }
 
+  getNext() {
+    let firstNode = this.head
+    let nextNode = firstNode.next
+    return nextNode.val
+  }
+
   moveTo(m) {
     let currNode = this.head
     let firstNode = this.head
