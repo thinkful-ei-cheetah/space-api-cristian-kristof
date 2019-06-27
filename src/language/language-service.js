@@ -1,3 +1,5 @@
+const LinkedList = require('../linkedlist')
+
 const LanguageService = {
   getUsersLanguage(db, user_id) {
     return db
@@ -44,12 +46,42 @@ const LanguageService = {
       )
       .where('lang.id', language_id)
   },
+
+  getLLData(db, language_id) {
+    return db
+      .from('word')
+      .select(
+        'word.id',
+        'word.original',
+        'word.translation',
+        'word.next',
+        'word.memory_value',
+        'word.correct_count',
+        'word.incorrect_count',
+        ...languageFields
+      )
+      .leftJoin(
+        'language',
+        'word.id',
+        'language.head'
+      )
+      .where({ language_id })
+  }, 
+
+  createLL(words) {
+    const LL = new LinkedList()
+    words.forEach(word => LL.insertLast(word))
+  }
 }
 
 const wordFields = [
   'word.original AS original',
   'word.correct_count AS correctCount',
   'word.incorrect_count AS incorrectCount'
+]
+
+const languageFields = [
+  'language.total_score AS totalScore',
 ]
 
 module.exports = LanguageService

@@ -3,6 +3,7 @@ const LanguageService = require('./language-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const languageRouter = express.Router()
+const jsonParser = express.json()
 
 languageRouter
   .use(requireAuth)
@@ -67,9 +68,17 @@ languageRouter
   })
 
 languageRouter
-  .post('/guess', async (req, res, next) => {
-    // implement me
-    res.send('implement me!')
+  .post('/guess', jsonParser, async (req, res, next) => {
+    const {guess} = req.body
+    
+    for (const field of ['guess'])
+      if (!req.body[field])
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`
+        })
+
+    // await LanguageService.getLLData()
+
   })
 
 module.exports = languageRouter
