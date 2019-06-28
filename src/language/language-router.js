@@ -38,7 +38,6 @@ languageRouter
         language: req.language,
         words,
       })
-      next()
     } catch (error) {
       next(error)
     }
@@ -53,15 +52,13 @@ languageRouter
       )
       
       const result = {
-        nextWord: word[0].original,
-        totalScore: word[0].totalScore,
-        wordCorrectCount: word[0].correctCount,
-        wordIncorrectCount: word[0].incorrectCount
+        nextWord: word.original,
+        totalScore: word.totalScore,
+        wordCorrectCount: word.correctCount,
+        wordIncorrectCount: word.incorrectCount
       }
 
-
       res.send(result)
-      next()
     } catch (error) {
       next(error)
     }
@@ -78,52 +75,49 @@ languageRouter
         })
 
     try {
-      const words = await LanguageService.getLLData(
+      const words = await LanguageService.getLanguageWords(
         req.app.get('db'),
         req.language.id
       )
 
-      const List = await LanguageService.createLL(words)
-
-      const firstQ = await List.getFirst()
-
-      const nextQ = await List.getNext()
-
-      const {
-        translation,
-        memory_value, 
-        incorrect_count, 
-        correct_count,
-        totalScore
-      } = firstQ
-        
-      const isCorrect = await function() {
-        if (guess !== translation) {
-          this.memory_value = 1
-          this.incorrect_count += 1
-          return false
-        } else if (guess === translation) {
-          this.memory_value = memory_value * 2 
-          this.correct_count += 1
-          this.totalScore += 1
-          return true
-        }
-        List.moveTo(this.memory_value)
-      }
+      const List = await LanguageService.createLL(
+        words,
+        req.language.head,
+        req.language.total_score
+      )
       
+      let word = List.head.val
+      let isCorrect = false
+
+      if (guess.toLowerCase() !== List.head.val.translation.toLowerCase()) {
+        List.head.val.memory_value = 1
+        List.head.val.incorrect_count++
+      } else {
+        List.head.val.memory_value = List.head.val.memory_value * 2 
+        List.head.val.correct_count++
+        List.totalScore++
+        isCorrect = true;
+      }
+
+      List.moveHead(word.memory_value)
+
+      await LanguageService.saveUpdates(
+        req.app.get('db'),
+        List,
+        req.language.id
+      )
 
       const feedback = {
-        'answer': translation,
-        'isCorrect': isCorrect(),
-        'nextWord': nextQ.original,
-        'totalScore': totalScore,
-        "wordCorrectCount": correct_count,
-        "wordIncorrectCount": incorrect_count
+        'answer': word.translation,
+        'isCorrect': isCorrect,
+        'nextWord': List.head.val.original,
+        'totalScore': List.totalScore,
+        "wordCorrectCount": List.head.val.correct_count,
+        "wordIncorrectCount": List.head.val.incorrect_count
       }
-
+      
       res.send(feedback)
       
-      next()
     } catch (error) {
       next(error)
     }

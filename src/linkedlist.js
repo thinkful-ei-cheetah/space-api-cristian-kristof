@@ -6,8 +6,9 @@ class _Node {
 }
 
 class LinkedList {
-  constructor() {
+  constructor({totalScore}) {
     this.head = null
+    this.totalScore = totalScore
   }
 
   insertFirst(item) {
@@ -129,20 +130,8 @@ class LinkedList {
     return currNode
   }
 
-  getFirst() {
-    let firstNode = this.head
-    return firstNode.val
-  }
-
-  getNext() {
-    let firstNode = this.head
-    let nextNode = firstNode.next
-    return nextNode.val
-  }
-
-  moveTo(m) {
+  moveHead(m) {
     let currNode = this.head
-    let firstNode = this.head
     let currPosition = 1
 
     while (currPosition <= m && currNode.next !== null) {
@@ -150,63 +139,13 @@ class LinkedList {
       currPosition++
     }
     
-    const tempNode = new _Node(firstNode.val, currNode.next)
+    const tempNode = new _Node(this.head.val, currNode.next)
 
     currNode.next = tempNode
-    this.head = firstNode.next
+    this.head = this.head.next
+    return this.head.val
   }
 
 }
-
-function test() {
-  const test = new LinkedList()
-
-  test.insertLast({
-    original: 'hola',
-    translation: 'hello'
-  })
-  test.insertLast({
-    original: 'carro',
-    translation: 'car'
-  })
-  test.insertLast({
-    original: 'perro',
-    translation: 'dog'
-  })
-  test.insertLast({
-    original: 'casa',
-    translation: 'house'
-  })
-  test.insertLast({
-    original: 'arbol',
-    translation: 'tree'
-  })
-
-  test.moveTo(4)
-
-  return test
-}
-
-
-function display(LL) {
-  let output = ''
-
-  let currNode = LL.head
-
-  while (currNode !== null) {
-    output += currNode.val
-
-    if (currNode.next !== null) {
-      output += ' -> '
-    }
-
-    currNode = currNode.next
-  }
-
-  console.log(output)
-}
-
-// display(test())
-// console.log(test().getFirst())
 
 module.exports = LinkedList

@@ -45,33 +45,47 @@ const LanguageService = {
         'word.id',
       )
       .where('lang.id', language_id)
+      .first()
   },
 
-  getLLData(db, language_id) {
-    return db
-      .from('word')
-      .select(
-        'word.id',
-        'word.original',
-        'word.translation',
-        'word.next',
-        'word.memory_value',
-        'word.correct_count',
-        'word.incorrect_count',
-        ...languageFields
-      )
-      .leftJoin(
-        'language',
-        'word.id',
-        'language.head'
-      )
-      .where({ language_id })
-  }, 
+  createLL(words, head, totalScore) {
+    const LL = new LinkedList({totalScore: totalScore})
+    let word = words.find(wrd => wrd.id === head)
 
-  createLL(words) {
-    const LL = new LinkedList()
-    words.forEach(word => LL.insertLast(word))
+    LL.insertFirst(word)
+
+    words.forEach(word => {
+      if (word.next) {
+        word = words.find(wrd => wrd.id === word.next)
+        LL.insertLast(word)
+      }
+    })
+
     return LL
+  },
+
+  saveUpdates(db, list, languageId) {
+    return db.transaction(async trx => {
+      await trx('language')
+        .where('id', languageId) 
+        .update({
+          total_score: list.totalScore,
+          head: list.head.val.id
+        }) 
+      
+      let currWord = list.head
+      while (currWord.next !== null) {
+        await trx('word')
+          .where('id', currWord.val.id)
+          .update({
+            memory_value: currWord.val.memory_value,
+            correct_count: currWord.val.correct_count,
+            incorrect_count: currWord.val.incorrect_count,
+            next: currWord.next ? currWord.next.val.id : null,
+          })
+        currWord = currWord.next
+      }
+    })
   }
 }
 
@@ -79,10 +93,6 @@ const wordFields = [
   'word.original AS original',
   'word.correct_count AS correctCount',
   'word.incorrect_count AS incorrectCount'
-]
-
-const languageFields = [
-  'language.total_score AS totalScore',
 ]
 
 module.exports = LanguageService
