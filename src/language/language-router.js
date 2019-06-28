@@ -58,7 +58,7 @@ languageRouter
         wordIncorrectCount: word.incorrectCount
       }
 
-      res.send(result)
+      return res.send(result)
     } catch (error) {
       next(error)
     }
@@ -116,7 +116,7 @@ languageRouter
         "wordIncorrectCount": List.head.val.incorrect_count
       }
       
-      res.send(feedback)
+      return res.send(feedback)
       
     } catch (error) {
       next(error)
