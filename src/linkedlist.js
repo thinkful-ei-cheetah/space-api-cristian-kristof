@@ -143,7 +143,6 @@ class LinkedList {
 
     currNode.next = tempNode
     this.head = this.head.next
-    return this.head.val
   }
 
 }

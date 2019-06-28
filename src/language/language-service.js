@@ -54,12 +54,10 @@ const LanguageService = {
 
     LL.insertFirst(word)
 
-    words.forEach(word => {
-      if (word.next) {
-        word = words.find(wrd => wrd.id === word.next)
-        LL.insertLast(word)
-      }
-    })
+    while (word.next !== null) {
+      word = words.find(wrd => wrd.id === word.next)
+      LL.insertLast(word)
+    }
 
     return LL
   },

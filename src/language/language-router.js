@@ -89,7 +89,7 @@ languageRouter
       let word = List.head.val
       let isCorrect = false
 
-      if (guess.toLowerCase() !== List.head.val.translation.toLowerCase()) {
+      if (guess.toLowerCase() !== List.head.val.translation) {
         List.head.val.memory_value = 1
         List.head.val.incorrect_count++
       } else {
@@ -99,7 +99,7 @@ languageRouter
         isCorrect = true;
       }
 
-      List.moveHead(word.memory_value)
+      List.moveHead(List.head.val.memory_value)
 
       await LanguageService.saveUpdates(
         req.app.get('db'),
