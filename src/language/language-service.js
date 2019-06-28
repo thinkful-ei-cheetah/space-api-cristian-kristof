@@ -74,7 +74,7 @@ const LanguageService = {
         }) 
       
       let currWord = list.head
-      while (currWord.next !== null) {
+      while (currWord) {
         await trx('word')
           .where('id', currWord.val.id)
           .update({
