@@ -59,7 +59,7 @@ languageRouter
       }
 
       console.log('test1')
-      return res.send(result)
+      res.send(result)
     } catch (error) {
       next(error)
     }
@@ -117,7 +117,7 @@ languageRouter
         "wordIncorrectCount": List.head.val.incorrect_count
       }
       
-      return res.send(feedback)
+      res.send(feedback)
       
     } catch (error) {
       next(error)
