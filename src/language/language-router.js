@@ -58,6 +58,7 @@ languageRouter
         wordIncorrectCount: word.incorrectCount
       }
 
+      console.log('test1')
       return res.send(result)
     } catch (error) {
       next(error)
