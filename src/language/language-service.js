@@ -81,7 +81,7 @@ const LanguageService = {
             memory_value: currWord.val.memory_value,
             correct_count: currWord.val.correct_count,
             incorrect_count: currWord.val.incorrect_count,
-            next: currWord.next ? currWord.next.val.id : null,
+            next: currWord.next !== null ? currWord.next.val.id : null,
           })
         currWord = currWord.next
       }
