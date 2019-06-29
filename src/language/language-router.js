@@ -103,7 +103,7 @@ languageRouter
       }
 
       console.log(word)
-      console.log(List)
+
 
       List.moveHead(List.head.val.memory_value)
 
@@ -120,7 +120,9 @@ languageRouter
         'totalScore': List.totalScore,
         "wordCorrectCount": List.head.val.correct_count,
         "wordIncorrectCount": List.head.val.incorrect_count
-      }
+      } 
+
+      console.log('feedback',feedback)
       
       res.send(feedback)
       
