@@ -57,8 +57,7 @@ languageRouter
         wordCorrectCount: word.correctCount,
         wordIncorrectCount: word.incorrectCount
       }
-
-      console.log('test1')
+      
       return res.send(result)
     } catch (error) {
       next(error)
@@ -89,7 +88,6 @@ languageRouter
      
       
       let word = List.head.val
-      console.log(word)
       let isCorrect = false
 
       if (guess.toLowerCase() !== List.head.val.translation) {
@@ -101,8 +99,6 @@ languageRouter
         List.totalScore++
         isCorrect = true;
       }
-
-      console.log(word)
 
 
       List.moveHead(List.head.val.memory_value)
@@ -132,4 +128,4 @@ languageRouter
 
   })
 
-module.exports = languageRouter
+module.exports = languageRouter;
