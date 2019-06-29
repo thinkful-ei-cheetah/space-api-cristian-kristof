@@ -34,7 +34,7 @@ languageRouter
         req.language.id,
       )
 
-      res.json({
+      return res.json({
         language: req.language,
         words,
       })
@@ -59,7 +59,7 @@ languageRouter
       }
 
       console.log('test1')
-      res.send(result)
+      return res.send(result)
     } catch (error) {
       next(error)
     }
@@ -86,8 +86,10 @@ languageRouter
         req.language.head,
         req.language.total_score
       )
+     
       
       let word = List.head.val
+      console.log(word)
       let isCorrect = false
 
       if (guess.toLowerCase() !== List.head.val.translation) {
@@ -99,6 +101,9 @@ languageRouter
         List.totalScore++
         isCorrect = true;
       }
+
+      console.log(word)
+      console.log(List)
 
       List.moveHead(List.head.val.memory_value)
 
